@@ -3,7 +3,7 @@
 ## Overview
 This project develops an **end-to-end churn risk prediction framework** for a non-subscription retail business using transactional data.
 
-The focus is on **business-first analytics**: realistic assumptions, interpretable modelling, and decision-ready outputs that can be understood and acted upon by non-technical stakeholders.
+The emphasis is on **business-first analytics**: realistic assumptions, interpretable modelling, and decision-ready outputs that can be operationalised by marketing and retention teams.
 
 Rather than maximising model complexity, the project prioritises **clarity, defensibility, and practical deployment considerations**.
 
@@ -19,22 +19,22 @@ Both projects use the **same Online Retail II dataset** and share the same clean
 - **Project #1 (`online-retail-customer-value-rfm`)** focuses on customer value analysis and RFM-based segmentation for marketing optimisation.
 - **Project #2 (this repository)** builds on that foundation to predict **customer churn risk** and support retention decision-making.
 
-Together, the two projects form a coherent analytics pipeline:
+Together, the projects form a coherent analytics pipeline:
 - *Who are our most valuable customers?*
 - *Which customers are at risk of leaving?*
-- *How should retention efforts be prioritised?*
+- *How should limited retention budgets be prioritised?*
 
 ---
 
 ## Business Problem
 In non-subscription retail, churn is rarely explicitly labelled. Customers simply stop purchasing.
 
-This creates key challenges for marketing and retention teams:
-- Which customers are most likely to disengage?
-- How can limited retention resources be allocated effectively?
-- How can churn risk be explained clearly to business stakeholders?
+This creates practical challenges for marketing and retention teams:
+- Identifying customers most likely to disengage
+- Prioritising retention efforts under constrained budgets
+- Explaining churn risk drivers to non-technical stakeholders
 
-This project addresses these questions using a **snapshot-based, forward-looking churn definition** combined with interpretable modelling.
+This project addresses these challenges using a **snapshot-based, forward-looking churn definition** combined with interpretable modelling.
 
 ---
 
@@ -44,7 +44,7 @@ This project addresses these questions using a **snapshot-based, forward-looking
 - **Granularity:** Transaction-level retail data  
 - **Key Fields:** Invoice date, customer ID, quantity, unit price, country  
 
-The same cleaned dataset used in `online-retail-customer-value-rfm` is reused here to ensure analytical consistency across projects.
+The same cleaned dataset used in `online-retail-customer-value-rfm` is reused here to ensure analytical consistency.
 
 ---
 
@@ -66,15 +66,12 @@ This approach avoids data leakage and mirrors how churn models are deployed in p
 ## Feature Engineering
 Customer-level behavioural features are constructed using **only data prior to the snapshot date**:
 
-- **Recency:** Days since last purchase
-- **Frequency:** Number of unique purchase occasions
-- **Monetary Value:** Total historical spend
-- **Average Order Value:** Mean transaction value
+- **Recency:** Days since last purchase  
+- **Frequency:** Number of unique purchase occasions  
+- **Monetary Value:** Total historical spend  
+- **Average Order Value:** Mean transaction value  
 
-These features are:
-- Interpretable
-- Aligned with business intuition
-- Widely used in customer analytics
+These features are interpretable, business-aligned, and widely used in customer analytics.
 
 ---
 
@@ -83,68 +80,50 @@ A **logistic regression model** is used to estimate churn risk.
 
 ### Why Logistic Regression?
 - Interpretable coefficients
-- Stable performance
-- Easy to communicate to non-technical stakeholders
+- Stable and transparent behaviour
+- Easy to communicate to business stakeholders
 - Appropriate given the available feature set
 
 Moderate class imbalance is handled using `class_weight="balanced"` rather than resampling.
 
 ---
 
-## Evaluation
-Model performance is evaluated using:
+## Key Findings
+- **Model performance:** ROC AUC ≈ **0.72**, indicating effective ranking of churn risk
+- **Primary churn drivers:**
+  1. **Recency** – strongest indicator of disengagement
+  2. **Frequency** – declining purchase activity signals weakening habits
+  3. **Monetary value** – lower lifetime spend reflects reduced commitment
+- **Risk distribution:**
+  - ~10% **High Risk**
+  - ~20% **Medium Risk**
+  - ~70% **Low Risk**
 
-- **ROC AUC (primary metric):** Measures the model’s ability to rank customers by churn risk
-- **Precision & Recall (Churn Class):** Interpreted in a retention context
-- **Confusion Matrix:** Evaluated at a baseline threshold of 0.5
-
-A ROC AUC of ~0.72 reflects **realistic performance** for retail churn prediction without data leakage or synthetic features.
+These findings align with established retail behaviour patterns and provide a defensible basis for prioritisation.
 
 ---
 
-## Interpretation & Business Insight
-Coefficient analysis highlights clear behavioural signals:
+## Business Outputs
+The model produces **decision-ready artefacts** suitable for operational use:
 
-- **Recency** is the strongest driver of churn risk, indicating disengagement
-- Declining **frequency** reflects weakening customer habits
-- Lower **monetary value** and **average order value** suggest reduced commitment
+### Risk Tables
+- **`customer_churn_risk_table.csv`**  
+  Full customer-level table containing churn probabilities and risk tiers (High / Medium / Low), ranked by predicted risk.
 
-These insights translate directly into retention strategy design.
+- **`top_at_risk_customers.csv`**  
+  A prioritised subset of customers representing the highest churn risk, suitable for direct targeting by retention teams.
+
+All outputs are generated programmatically to ensure reproducibility.
 
 ---
 
 ## Business Application
-In a real deployment, this model would be used to:
+In practice, this framework would support:
+- Periodic churn risk scoring (weekly or monthly)
+- Capacity-aware targeting of high-risk customers
+- Alignment of intervention intensity with risk tier
 
-- Generate periodic churn risk scores
-- Rank customers by predicted risk
-- Prioritise high-risk customers for targeted retention interventions
-
-Rather than contacting all customers, resources can be focused where intervention is most likely to prevent revenue loss.
-
----
-
-## Outputs
-All key outputs are generated programmatically to ensure reproducibility:
-
-- **Figures**
-  - ROC Curve – Churn Risk Model
-  - Confusion Matrix (Threshold = 0.5)
-- **Tables**
-  - Model coefficients
-  - Top at-risk customers
-
-### Risk Outputs
-
-In addition to evaluation metrics, the project produces two decision-ready artefacts:
-
-- **`customer_churn_risk_table.csv`**  
-  A complete customer-level table containing churn probability scores and risk tiers (High / Medium / Low), ranked by predicted risk.
-
-- **`top_at_risk_customers.csv`**  
-  A prioritised subset of customers representing the highest churn risk segment, suitable for direct use in retention campaigns.
-
-All outputs are generated programmatically to ensure reproducibility.
+Rather than applying blanket campaigns, retention efforts can be focused where they are most likely to prevent revenue loss.
 
 ---
 
@@ -158,7 +137,7 @@ Potential extensions include:
 - Ensemble model comparison
 - Survival (time-to-churn) analysis
 
-These extensions are acknowledged but not implemented to preserve clarity and interpretability.
+These are acknowledged but not implemented to preserve clarity and interpretability.
 
 ---
 
@@ -173,3 +152,5 @@ Combined with `online-retail-customer-value-rfm`, it forms a structured analytic
 ---
 
 *All figures and outputs are generated programmatically via the final notebook cell to ensure full reproducibility.*
+
+
