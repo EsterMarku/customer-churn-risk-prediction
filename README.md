@@ -134,6 +134,18 @@ All key outputs are generated programmatically to ensure reproducibility:
   - Model coefficients
   - Top at-risk customers
 
+### Risk Outputs
+
+In addition to evaluation metrics, the project produces two decision-ready artefacts:
+
+- **`customer_churn_risk_table.csv`**  
+  A complete customer-level table containing churn probability scores and risk tiers (High / Medium / Low), ranked by predicted risk.
+
+- **`top_at_risk_customers.csv`**  
+  A prioritised subset of customers representing the highest churn risk segment, suitable for direct use in retention campaigns.
+
+All outputs are generated programmatically to ensure reproducibility.
+
 ---
 
 ## Limitations & Future Extensions
